@@ -1,5 +1,5 @@
 # Security & Gateway Layer
-### Важливо: за причини тимчасової відсутності обладнання, я не маю можливості виконати завдання та перевірити роботу системи вчасно. Відповідно, зміни для минулих репозиторіїв, файли та додаткові пояснення будуть надані не пізніше 08.02.2026. Прошу вибачення за незручності!
+### Статус роботи: за причини відсутності електроенергії проєкт перебуває в активній фазі інтеграції security-шару та cloud deployment. Основна архітектура, gateway, OAuth2 та мікросервіси вже реалізовані та доступні для перегляду та використання за посиланням: https://github.com/OlesiaShevchenko245/Internship_Task5.2/tree/master. Частина cloud-інфраструктури та CI/CD все ще перебуває у процесі завершення.
 
 ## Опис проєкту  
 До системи астрономічних спостережень Cosmorum додані централізований шар безпеки та доступу:  
@@ -47,17 +47,32 @@ Gateway виступає єдиною точкою входу та відпов�
           v
       [Backend]
 
-```
+```  
+Gateway виконує:  
+- routing  
+- авторизацію  
+- OAuth2 login  
+- cookie/JWT management  
+- CORS policy  
+- security headers  
 ___
 
 ## Запуск (на поточному етапі, буде змінено)
-### Клонування репозиторію (завантаження https://github.com/OlesiaShevchenko245/Internship_Task5.1)  
+### Клонування репозиторію (завантаження https://github.com/OlesiaShevchenko245/Internship_Task5.2/tree/master)  
 ```
 git clone <repository-url>
 cd Internship_Task5.1
-cp .env.example .env
+cp .env.example .env #з заповненням ваших даних
 docker compose up -d --build
 ```
+Після запуску (локально):  
+
+| Сервіс      | URL                    |
+| ----------- | -----------------------|
+| Frontend    | [http://localhost:8088]|
+| Gateway API | [http://localhost:8080]|
+| MailHog     | [http://localhost:8025]|
+| Kibana      | [http://localhost:5601]|
 ___
 
 ## Компоненти  
@@ -79,8 +94,12 @@ Gateway надає:
 - Token використовується для доступу до API  
 - Без авторизації користувач отримує 401
 
-### Endpoint /profile
-Gateway або окремий auth-сервіс надає endpoint:  
+### Перевірка авторизації (Endpoint /profile)
+Gateway або окремий auth-сервіс надає endpoint. Необхідно:
+1. Відкрити frontend (http://localhost:8088)   
+2. Натиснути Login  
+3. Увійти через Google  
+4. Після логіну викликається:  
 ```
 GET /profile
 ```
@@ -124,10 +143,13 @@ ___
 docker-compose.yml піднімає всю систему локально.
 ___
 
-## Google Cloud Platform  
-Система деплоїться у Google Kubernetes Engine. Кожен сервіс існує як окремий Deployment, а Gateway - як LoadBalancer Service. 
-Також створено Secrets для OAuth2 і SMTP та ConfigMaps для конфігурацій. 
-
+## Google Cloud Platform   
+Система спроєктована для деплою у GKE:  
+- Кожен сервіс = окремий Deployment  
+- Gateway = LoadBalancer Service  
+- Secrets через Kubernetes  
+- Rolling updates  
+- Horizontal scaling ready  
 ___
 
 ## CI/CD  
@@ -143,11 +165,13 @@ ___
 
 ## Безпека  
 Для безпеки даних системи зроблені такі рішення:  
-- OAuth2 secrets зберігаються у:  
-  - GCP Secret Manager  
-  - або Kubernetes Secrets  
-- Токени НЕ зберігаються у репозиторії  
-- .env файли не комітяться
+- OAuth secrets НЕ зберігаються у репозиторії  
+- JWT secret реалізовані через environment variables  
+- Kubernetes Secrets  
+- HttpOnly cookies  
+- SameSite policy  
+- CORS restriction  
+- Secure headers  
 ___
 
 ## Автор
