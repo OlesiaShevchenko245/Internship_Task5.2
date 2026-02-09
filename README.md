@@ -1,5 +1,8 @@
 # Security & Gateway Layer
-### Статус роботи: за причини відсутності електроенергії проєкт перебуває в активній фазі інтеграції security-шару та cloud deployment. Основна архітектура, gateway, OAuth2 та мікросервіси вже реалізовані та доступні для перегляду та використання за посиланням: https://github.com/OlesiaShevchenko245/Internship_Task5.2/tree/master. Частина cloud-інфраструктури та CI/CD все ще перебуває у процесі завершення.
+### Статус роботи:  
+Основна архітектура, API Gateway, OAuth2 авторизація та мікросервісна система повністю реалізовані та запускаються локально через Docker. У репозиторії міститься завершена робоча система backend з frontend. В свою чергу, Cloud deployment та CI/CD pipeline підготовлені відповідно до production-архітектури.
+Репозиторій доступний за посиланням: https://github.com/OlesiaShevchenko245/Internship_Task5.2/tree/master. 
+___
 
 ## Опис проєкту  
 До системи астрономічних спостережень Cosmorum додані централізований шар безпеки та доступу:  
@@ -57,11 +60,11 @@ Gateway виконує:
 - security headers  
 ___
 
-## Запуск (на поточному етапі, буде змінено)
+## Запуск (локально)
 ### Клонування репозиторію (завантаження https://github.com/OlesiaShevchenko245/Internship_Task5.2/tree/master)  
 ```
 git clone <repository-url>
-cd Internship_Task5.1
+cd Internship_Task5.2
 cp .env.example .env #з заповненням ваших даних
 docker compose up -d --build
 ```
@@ -149,7 +152,9 @@ ___
 - Gateway = LoadBalancer Service  
 - Secrets через Kubernetes  
 - Rolling updates  
-- Horizontal scaling ready  
+- Horizontal scaling ready
+
+Повний деплой у Google Kubernetes Engine потребує активного billing-акаунту Google Cloud Platform. GKE, Artifact Registry, Load Balancer та інші необхідні сервіси належать до платних ресурсів GCP і не можуть бути активовані без підключеного billing-профілю. На момент виконання завдання, на жаль, billing-акаунт є мені недоступним, але попри це, у репозиторії реалізовано повну Kubernetes-архітектуру, підготовлено manifests для production-деплою та налаштовано GitHub Actions pipeline. Система запускається локально через Docker, а сама архітектура проєкту відповідає GKE deployment-моделі. 
 ___
 
 ## CI/CD  
@@ -158,7 +163,7 @@ Pipeline:
 - Push у main  
 - Збірка Docker image  
 - Push у Container Registry  
-- Автоматичний redeploy у GKE  
+- Автоматичний redeploy у GKE (архітектурно, без реалізації)
 - Rolling update сервісів
 
 ___
