@@ -48,7 +48,8 @@ jobs:
       - name: Build & Push images
         if: false
         run: |
-          set -e
+          if: false
+          set -e 
 
           TAG=${GITHUB_SHA}
 
